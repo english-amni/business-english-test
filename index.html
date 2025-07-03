@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business English Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script>
+    <style>
+        /* Custom CSS */
+        body {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            background-image: url('https://images.pexels.com/photos/1939485/pexels-photo-1939485.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: #1f2937;
+        }
+        
+        .test-content {
+            pointer-events: none;
+        }
+        
+        /* Card styling */
+        .card {
+            background-color: rgba(255, 255, 255, 0.92);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        .card:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+        
+        /* Header styling */
+        header {
+            background-color: rgba(30, 64, 175, 0.95);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Modal styling */
+        .modal {
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        /* Timer animation */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .timer-warning {
+            animation: pulse 1s infinite;
+        }
+        
+        /* Button styling */
+        .btn-primary {
+            background-color: #1e40af;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border-radius: 8px;
+        }
+        
+        .btn-primary:hover {
+            background-color: #1e3a8a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(30, 64, 175, 0.2);
+        }
+        
+        /* Input styling */
+        input {
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        input:focus {
+            border-color: #1e40af;
+            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+        }
+        
+        /* Typography improvements */
+        h1, h2, h3, h4 {
+            font-weight: 600;
+            letter-spacing: -0.025em;
+        }
+        
+        /* Layout improvements */
+        .container {
+            max-width: 1200px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+    <!-- Firebase Configuration -->
+    <script>
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyC1wZP5kN-CpcONAZYFmsgZqjExiEyXdzs",
+            authDomain: "soal-test-c442b.firebaseapp.com",
+            databaseURL: "https://soal-test-c442b-default-rtdb.firebaseio.com",
+            projectId: "soal-test-c442b",
+            storageBucket: "soal-test-c442b.appspot.com",
+            messagingSenderId: "831619937939",
+            appId: "1:831619937939:web:75956b421e96edec29ff66",
+            measurementId: "G-XTQ98N72T5"
+        };
+        
+        // Initialize Firebase
+        let database, auth;
+        try {
+            firebase.initializeApp(firebaseConfig);
+            database = firebase.database();
+            auth = firebase.auth();
+            
+            // Monitor connection status
+            database.ref('.info/connected').on('value', (snapshot) => {
+                const isConnected = snapshot.val() === true;
+                console.log(isConnected ? 'Connected to Firebase' : 'Disconnected from Firebase');
+            });
+        } catch (error) {
+            console.error('Firebase initialization error:', error);
+            alert('Error connecting to the server. Please refresh the page and try again.');
+        }
+    </script>
+
+    <!-- Landing Page -->
+    <div id="landing-page" class="min-h-screen flex flex-col">
+        <header class="bg-blue-800 text-white py-6 shadow-lg">
+            <div class="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <img src="https://assets.nsd.co.id/images/kampus/logo/AMNI.png" alt="Unimar AMNI Logo" class="h-16 mr-4">
+                    <div>
+                        <h1 class="text-2xl font-bold">FINAL TEST: BUSINESS ENGLISH</h1>
+                        <p class="text-sm">Lecturer: Dhanan Abimanto</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-grow container mx-auto px-4 py-8">
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Login Form -->
+                <div class="w-full lg:w-1/2 card p-8">
+                    <h2 class="text-xl font-semibold mb-4 text-blue-800">Login</h2>
+                    <form id="login-form" class="space-y-4">
+                        <div>
+                            <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+                            <input type="text" id="username" name="username" required 
+                                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                            <input type="password" id="password" name="password" required 
+                                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <button type="submit" id="login-btn" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50">
+                                <span id="login-text">Login</span>
+                                <span id="login-spinner" class="hidden ml-2">
+                                    <i class="fas fa-spinner fa-spin"></i>
+                                </span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Instructions -->
+                <div class="w-full lg:w-1/2 card p-8">
+                    <h2 class="text-xl font-semibold mb-4 text-blue-800">Test Instructions</h2>
+                    <div class="prose max-w-none">
+                        <ol class="list-decimal pl-5 space-y-2">
+                            <li>To start the test you must login first with your <b>NIM/Student ID </b> as username and fill in the password with <b>"trans12345"</b>.</li>
+                            <li>The test consists of 40 multiple-choice questions.</li>
+                            <li>You will have 90 minutes (1.5 hours) to complete the test.</li>
+                            <li>The timer will start as soon as you click "Start Test".</li>
+                            <li>Once you start the test, you cannot pause or restart it.</li>
+                            <li>Each question has only one correct answer.</li>
+                            <li>Some questions may include reading passages that multiple questions refer to.</li>
+                            <li>Copying or pasting test content is not allowed.</li>
+                            <li>You can only take the test once.</li>
+                            <li>Your score will be displayed immediately after submission or it will automatically submit when time expires</li>
+                            <li>The maximum score is 100 (all answers correct). A score of 70 or above means you <b>pass</b>, otherwise you need to take remedial class.</li>
+                            <li>Your score will be immediately stored safely in my database, so don't worry. After you finish your test, don't forget to click the 'submit' button.</li>
+                        </ol>
+                        <p class="mt-4 font-semibold">Good luck!</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="bg-gray-800 text-white py-4">
+            <div class="container mx-auto px-4 text-center text-sm">
+                <p>&copy; 2025 English Test - Dhanan - UNIMAR AMNI</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Admin Dashboard (Hidden by default) -->
+    <div id="admin-dashboard" class="hidden min-h-screen bg-gray-100">
+        <header class="bg-blue-800 text-white py-4 shadow-lg">
+            <div class="container mx-auto px-4 flex justify-between items-center">
+                <h1 class="text-xl font-bold">Admin Dashboard</h1>
+                <div class="flex gap-2">
+                    <button id="export-btn" class="px-4 py-2 bg-green-600 rounded hover:bg-green-700 flex items-center">
+                        <i class="fas fa-file-excel mr-2"></i> Export
+                    </button>
+                    <button id="logout-btn" class="px-4 py-2 bg-red-600 rounded hover:bg-red-700">Logout</button>
+                </div>
+            </div>
+        </header>
+
+        <main class="container mx-auto px-4 py-8">
+            <div class="card overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-lg font-semibold text-gray-800">Student Test Results</h2>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NIM</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Score (out of 100)</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Completed</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="results-table-body" class="bg-white divide-y divide-gray-200">
+                            <!-- Results will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Student Test Page (Hidden by default) -->
+    <div id="test-page" class="hidden min-h-screen bg-gray-100">
+        <header class="bg-blue-800 text-white py-4 shadow-lg">
+            <div class="container mx-auto px-4 flex justify-between items-center">
+                <div>
+                    <h1 class="text-xl font-bold">Final Test: Business English</h1>
+                    <div id="student-info" class="text-sm"></div>
+                </div>
+                <div id="timer" class="bg-red-600 text-white px-4 py-2 rounded-lg font-bold">
+                    01:30:00
+                </div>
+            </div>
+        </header>
+
+        <main class="container mx-auto px-4 py-8">
+            <div class="card overflow-hidden">
+                <div id="test-container" class="p-6">
+                    <!-- Test content will be loaded here -->
+                </div>
+                <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end">
+                    <button id="submit-test" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+                        Submit Test
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Welcome Modal -->
+    <div id="welcome-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="card max-w-md w-full p-8">
+            <div class="flex justify-between items-start mb-4">
+                <h3 class="text-lg font-semibold text-gray-900" id="welcome-title">Welcome, Student!</h3>
+            </div>
+            <div class="mb-6">
+                <p id="welcome-message">The test will begin when you click the "Start Test" button. Have you read the instructions? If not, please read them again.</p>
+            </div>
+            <div class="flex justify-between">
+                <button id="read-instructions" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                    Read Instructions
+                </button>
+                <button id="start-test" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+                    Start Test
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Instructions Modal -->
+    <div id="instructions-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full p-6 max-h-[80vh] overflow-y-auto">
+            <div class="flex justify-between items-start mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Test Instructions</h3>
+                <button id="close-instructions" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="prose max-w-none">
+                <ol class="list-decimal pl-5 space-y-2">
+                    <li>The test consists of 40 multiple-choice questions.</li>
+                    <li>You will have 90 minutes (1.5 hours) to complete the test.</li>
+                    <li>The timer will start as soon as you click "Start Test".</li>
+                    <li>Once you start the test, you cannot pause or restart it.</li>
+                    <li>Each question has only one correct answer.</li>
+                    <li>Some questions may include reading passages that multiple questions refer to.</li>
+                    <li>Copying or pasting test content is not allowed.</li>
+                    <li>You can only take the test once.</li>
+                    <li>Your score will be displayed immediately after submission.</li>
+                    <li>A score above or equals to 70, means you pass, otherwise, if you get below 70, you need to take remidial class.</li>
+                </ol>
+                <p class="mt-4 font-semibold">Good luck!</p>
+            </div>
+            <div class="mt-6 flex justify-end">
+                <button id="back-to-welcome" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                    Back
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Modal -->
+    <div id="results-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+            <div class="flex justify-between items-start mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Test Results</h3>
+            </div>
+            <div class="mb-6 text-center">
+                <div id="score-display" class="text-4xl font-bold mb-2"></div>
+                <div id="result-message" class="text-xl"></div>
+                <div id="detailed-results" class="mt-4 text-left hidden">
+                    <p>Correct: <span id="correct-count">0</span>/40</p>
+                    <p>Incorrect: <span id="incorrect-count">0</span></p>
+                </div>
+            </div>
+            <div class="flex justify-center">
+                <button id="close-results" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const landingPage = document.getElementById('landing-page');
+        const adminDashboard = document.getElementById('admin-dashboard');
+        const testPage = document.getElementById('test-page');
+        const loginForm = document.getElementById('login-form');
+        const logoutBtn = document.getElementById('logout-btn');
+        const resultsTableBody = document.getElementById('results-table-body');
+        const studentInfo = document.getElementById('student-info');
+        const testContainer = document.getElementById('test-container');
+        const submitTestBtn = document.getElementById('submit-test');
+        const timerDisplay = document.getElementById('timer');
+        const welcomeModal = document.getElementById('welcome-modal');
+        const welcomeTitle = document.getElementById('welcome-title');
+        const welcomeMessage = document.getElementById('welcome-message');
+        const startTestBtn = document.getElementById('start-test');
+        const readInstructionsBtn = document.getElementById('read-instructions');
+        const instructionsModal = document.getElementById('instructions-modal');
+        const closeInstructionsBtn = document.getElementById('close-instructions');
+        const backToWelcomeBtn = document.getElementById('back-to-welcome');
+        const resultsModal = document.getElementById('results-modal');
+        const scoreDisplay = document.getElementById('score-display');
+        const resultMessage = document.getElementById('result-message');
+        const closeResultsBtn = document.getElementById('close-results');
+        const detailedResults = document.getElementById('detailed-results');
+        const correctCount = document.getElementById('correct-count');
+        const incorrectCount = document.getElementById('incorrect-count');
+
+        // Test data
+        const testQuestions = [
+    // Section 1: Reading Passage 1 (Questions 1-3)
+    {
+        type: 'reading',
+        passage: 'Business English is a specialized form of the English language used in professional and formal settings. It focuses on clear, concise, and polite communication, which is crucial when interacting with colleagues, clients, and international partners. Unlike casual English, Business English avoids slang and informal expressions, and it often follows structured formats such as emails, reports, and meeting agendas. One key reason Business English is important is because it serves as a universal language in the global workplace. For example, a manager in Indonesia and a client in the U.S. can successfully communicate if both use Business English. However, knowing the language is not enough. Understanding cultural differences is equally important to avoid miscommunication or unintentional offense. In addition to vocabulary and tone, Business English emphasizes active voice and professional diplomacy. Whether delivering a presentation or giving feedback, professionals are expected to remain polite and respectful. The main goal is always to express ideas effectively without sounding blunt or careless.',
+        questions: [
+            {
+                id: 1,
+                question: 'What is one main purpose of Business English according to the passage?',
+                options: [
+                    'To help people write novels in English',
+                    'To communicate politely and effectively in the workplace',
+                    'To understand English slang and informal language',
+                    'To replace local languages with English'
+                ],
+                answer: 1 // Jawaban B
+            },
+            {
+                id: 2,
+                question: 'According to the passage, why is understanding culture important in business communication?',
+                options: [
+                    'It helps you learn grammar faster',
+                    'It allows you to use more idioms',
+                    'It teaches you how to write reports',
+                    'It prevents unintentional offense'
+                ],
+                answer: 3 // Jawaban D
+            },
+            {
+                id: 3,
+                question: 'Which of the following is NOT a characteristic of Business English mentioned in the passage?',
+                options: [
+                    'Structured formats',
+                    'Use of slang and idioms',
+                    'Clear and concise language',
+                    'Polite and respectful tone'
+                ],
+                answer: 1 // Jawaban B
+            }
+        ]
+    },
+    // Section 2: Grammar & Business English (Questions 4-5)
+    {
+        type: 'grammar',
+        questions: [
+            {
+                id: 4,
+                question: 'Choose the correct verb form to complete the sentence: Business professionals ______ to remain polite and respectful when giving feedback.',
+                options: [
+                    'are expected',
+                    'expected',
+                    'expects',
+                    'is expected'
+                ],
+                answer: 0 // Jawaban A
+            },
+            {
+                id: 5,
+                question: 'What does the word "concise" most likely mean in the sentence: “It focuses on clear, concise, and polite communication…”?',
+                options: [
+                    'Funny and entertaining',
+                    'Short and to the point',
+                    'Complicated and detailed',
+                    'Long and formal'
+                ],
+                answer: 1 // Jawaban B
+            }
+        ]
+    },
+    // Section 3: Reading Passage 2 (Questions 6-7)
+    {
+        type: 'reading',
+        passage: 'Speaking English on the phone can be a real challenge for many ESL learners. Unlike face-to-face conversations, phone calls don’t allow you to see the other person’s mouth or body language. This makes it harder to understand and be understood. That’s why it is important to speak slowly, clearly, and with good pronunciation—especially with sounds that are difficult, like "r" and "l" or "b" and "v." Another challenge is using the right language depending on the situation. Many learners forget that being polite is essential in business calls. Using modal verbs like “Could you…” or “Would you mind…” can make your speech sound more respectful. Practicing with a friend, calling real businesses, and listening to voicemail recordings can help improve your telephone skills over time.',
+        questions: [
+            {
+                id: 6,
+                question: 'According to the passage, why is it harder to understand someone over the phone than in person?',
+                options: [
+                    'Phones often have poor signals',
+                    'People speak faster on the phone',
+                    'You cannot see facial expressions or mouth movement',
+                    'Business English is more difficult than regular English'
+                ],
+                answer: 2 // Jawaban C
+            },
+            {
+                id: 7,
+                question: 'What advice does the passage give for sounding polite in business calls?',
+                options: [
+                    'Speak louder than usual',
+                    'Use modal verbs like "Could you..." or "Would you mind..."',
+                    'Use informal phrases',
+                    'Avoid asking questions'
+                ],
+                answer: 1 // Jawaban B
+            }
+        ]
+    },
+    // Section 4: Business English (Questions 8-10)
+    {
+        type: 'business',
+        questions: [
+            {
+                id: 8,
+                question: 'Choose the best word to complete the sentence: When someone is unavailable, you can leave a message on their ______.',
+                options: [
+                    'text',
+                    'hotspot',
+                    'voicemail',
+                    'ringtone'
+                ],
+                answer: 2 // Jawaban C
+            },
+            {
+                id: 9,
+                question: 'Which of the following is the correct formal way to ask to speak to someone?',
+                options: [
+                    'May I speak to Mr. Green in the accounting department, please?',
+                    'Can you put Michael on?',
+                    'Is Nina there?',
+                    'Tell Josef it’s me.'
+                ],
+                answer: 0 // Jawaban A
+            },
+            {
+                id: 10,
+                question: 'What does the word “engaged” (BrE) mean when referring to a telephone line?',
+                options: [
+                    'The call has ended',
+                    'The line is being used',
+                    'The person is not available',
+                    'The phone is charging'
+                ],
+                answer: 1 // Jawaban B
+            }
+        ]
+    },
+    // Section 5: Reading Passage 3 (Questions 11-12)
+    {
+        type: 'reading',
+        passage: 'Job hunting has changed dramatically over the years. In the past, job seekers had to visit offices in person just to ask if any positions were available. Today, technology has made the process much easier. With just a few clicks, people can access thousands of job opportunities online. Websites like LinkedIn, JobStreet, and JobDB provide updated job postings, and many companies post vacancies directly on their websites. Besides online platforms, job seekers can still find opportunities through their university’s career center. These centers often post flyers on bulletin boards and offer services such as internship listings and on-campus jobs. Printed media like newspapers and magazines are still used, though less common today. When reading or writing job-related texts, it’s important to recognize the use of the present tense. For example, the sentence “Companies advertise jobs online” shows a regular habit using the simple present, while “I am preparing my CV” uses the present continuous to describe an action happening now.',
+        questions: [
+            {
+                id: 11,
+                question: 'How has technology changed the way people search for jobs?',
+                options: [
+                    'Job seekers can easily find job openings online',
+                    'They must pay to apply for jobs',
+                    'People now visit more offices in person',
+                    'Companies have stopped hiring completely'
+                ],
+                answer: 0 // Jawaban A
+            },
+            {
+                id: 12,
+                question: 'What is the purpose of the Career Center on campus?',
+                options: [
+                    'To host graduation ceremonies',
+                    'To help students find internships and job information',
+                    'To teach grammar',
+                    'To give out printed newspapers'
+                ],
+                answer: 1 // Jawaban B
+            }
+        ]
+    },
+    // Section 6: Grammar (Question 13)
+    {
+        type: 'grammar',
+        questions: [
+            {
+                id: 13,
+                question: 'What does the sentence "Many companies are recruiting new employees right now" express?',
+                options: [
+                    'A past habit',
+                    'A general truth',
+                    'A current action using present continuous tense',
+                    'A future plan'
+                ],
+                answer: 2 // Jawaban C
+            }
+        ]
+    },
+    // Section 7: Business English (Questions 14-20)
+    {
+        type: 'business',
+        questions: [
+            {
+                id: 14,
+                question: 'What is the main purpose of an application letter (cover letter)?',
+                options: [
+                    'To describe personal hobbies in detail',
+                    'To summarize your salary expectations',
+                    'To replace the need for a CV',
+                    'To explain why you are qualified for a job and highlight relevant experiences'
+                ],
+                answer: 3 // Jawaban D
+            },
+            {
+                id: 15,
+                question: 'What should be included in the first paragraph of an application letter?',
+                options: [
+                    'A list of all your awards',
+                    'Contact information of the employer',
+                    'Your previous job responsibilities',
+                    'The job you are applying for and how you found the listing'
+                ],
+                answer: 3 // Jawaban D
+            },
+            {
+                id: 16,
+                question: 'What is the main difference between a CV and a resume, particularly in the U.S. context?',
+                options: [
+                    'A resume is more detailed than a CV',
+                    'A CV is used only for government jobs',
+                    'A resume summarizes experience briefly, while a CV is more detailed and academic',
+                    'They are interchangeable in the U.S.'
+                ],
+                answer: 2 // Jawaban C
+            },
+            {
+                id: 17,
+                question: 'Which of the following should not be included in a U.S.-style CV?',
+                options: [
+                    'Contact information',
+                    'Salary history and photo',
+                    'Academic and professional experience',
+                    'Honors and awards'
+                ],
+                answer: 1 // Jawaban B
+            },
+            {
+                id: 18,
+                question: 'What is one important tip for writing an effective CV?',
+                options: [
+                    'Tailor the CV to the job and use bullet points for clarity',
+                    'Include every single job you\'ve ever had',
+                    'Write in full paragraphs for each section',
+                    'Only include educational background, not work experience'
+                ],
+                answer: 0 // Jawaban A
+            },
+            {
+                id: 19,
+                question: 'Why is it important to refer to other documents (like a resume or recommendation letters) in your application letter?',
+                options: [
+                    'To make the letter longer',
+                    'To avoid writing a CV',
+                    'To confuse the employer',
+                    'To show that you have supporting materials that strengthen your application'
+                ],
+                answer: 3 // Jawaban D
+            },
+            {
+                id: 20,
+                question: 'In what situations are you more likely to use a CV rather than a resume?',
+                options: [
+                    'When applying for customer service jobs in the U.S.',
+                    'When applying to academic or research positions or jobs outside the U.S.',
+                    'When writing an informal job inquiry',
+                    'When applying for part-time retail work'
+                ],
+                answer: 1 // Jawaban B
+            }
+        ]
+    },
+    // Section 8: Business English (Questions 21-23)
+    {
+        type: 'business',
+        questions: [
+            {
+                id: 21,
+                question: 'What is the main difference between a formal and informal email?',
+                options: [
+                    'Formal emails are always longer than informal ones',
+                    'Informal emails do not need correct punctuation',
+                    'Informal emails must include an attachment',
+                    'Formal emails are used in professional settings, while informal emails are for friendly communication'
+                ],
+                answer: 3 // Jawaban D
+            },
+            {
+                id: 22,
+                question: 'What does the email address reservations@beachhotelbern.com suggest about the sender?',
+                options: [
+                    'The sender works in a department, not an individual person',
+                    'The email is from a personal Gmail account',
+                    'The sender is a student',
+                    'The sender is sending a formal complaint'
+                ],
+                answer: 0 // Jawaban A
+            },
+            {
+                id: 23,
+                question: 'According to the material, what should you do before writing an email?',
+                options: [
+                    'Translate it into two languages',
+                    'Decide whether to write a formal or informal email',
+                    'Always use the same email template',
+                    'Start with your name and then the date'
+                ],
+                answer: 1 // Jawaban B
+            }
+        ]
+    },
+    // Section 9: Reading Passage 4 (Questions 24-30)
+    {
+        type: 'reading',
+        passage: 'A job interview is one of the most important steps in the hiring process. It is a meeting between a job applicant and a potential employer. The main purpose of a job interview is for the employer to decide if the applicant is suitable for the position, and for the applicant to learn more about the company and the job itself. There are different types of job interviews. The most common is a one-to-one interview, where the applicant meets with a single interviewer. A panel interview, on the other hand, involves two or more interviewers asking questions. Another type is a competency-based interview, where the interviewer asks for specific examples of how the applicant has handled situations in the past, such as teamwork or problem-solving. Preparing for a job interview is crucial. Applicants should research the company, understand the job role, and practice answering common interview questions. It is also important to dress properly, arrive on time, and show a positive attitude. During the interview, both the applicant’s attitude (how they approach challenges) and aptitude (skills and abilities) are evaluated. By preparing well and showing confidence, applicants can increase their chances of making a good impression and getting the job.',
+        questions: [
+            {
+                id: 24,
+                question: 'What is the main purpose of a job interview?',
+                options: [
+                    'To sign a contract',
+                    'To evaluate the applicant’s suitability and let the applicant learn about the job',
+                    'To test English skills only',
+                    'To receive a job offer immediately'
+                ],
+                answer: 1 // Jawaban B
+            },
+            {
+                id: 25,
+                question: 'Which of the following is an example of a competency-based interview question?',
+                options: [
+                    'Can you tell me about a time you solved a problem at work?',
+                    'What is your salary expectation?',
+                    'What is your favorite color?',
+                    'Where do you live?'
+                ],
+                answer: 0 // Jawaban A
+            },
+            {
+                id: 26,
+                question: 'What are two important things an applicant should do to prepare for a job interview?',
+                options: [
+                    'Sleep all day and bring food',
+                    'Research the company and arrive late',
+                    'Research the company and practice answering questions',
+                    'Wear casual clothes and skip the preparation'
+                ],
+                answer: 2 // Jawaban C
+            },
+            {
+                id: 27,
+                question: 'What does the word aptitude refer to in a job interview context?',
+                options: [
+                    'A person’s appearance and style',
+                    'A person’s professional skills and strengths',
+                    'A person’s academic background only',
+                    'A person’s daily routine'
+                ],
+                answer: 1 // Jawaban B
+            },
+            {
+                id: 28,
+                question: 'Choose the correct sentence using present tense (simple or continuous):',
+                options: [
+                    'She preparing for the interview by watching videos.',
+                    'He prepare the questions carefully.',
+                    'I am understand the interview format.',
+                    'They are discussing the interview questions now.'
+                ],
+                answer: 3 // Jawaban D
+            },
+            {
+                id: 29,
+                question: 'What is the meaning of the word attitude as used in the passage?',
+                options: [
+                    'The way a person dresses',
+                    'A person\'s daily schedule',
+                    'A formal document submitted with a resume',
+                    'The way a person deals with work and problems'
+                ],
+                answer: 3 // Jawaban D
+            },
+            {
+                id: 30,
+                question: 'Identify the correct use of present perfect tense based on the context:',
+                options: [
+                    'I watch interview tips video every night.',
+                    'I have watched three interview videos to prepare.',
+                    'I was watched the interview video.',
+                    'I am watch the video for preparation.'
+                ],
+                answer: 1 // Jawaban B
+            }
+        ]
+    },
+    // Section 10: Reading Passage 5 (Questions 31-32)
+    {
+        type: 'reading',
+        passage: 'A job interview online or wawancara kerja daring is essentially the same as a regular job interview, with one main difference: it is done remotely using video conferencing platforms like Zoom, Google Meet, or Microsoft Teams. Unlike traditional interviews where you meet your interviewer face-to-face, online interviews are conducted through a screen, meaning you don\'t need to travel or physically be in the same room. However, this doesn’t mean online interviews are easier or less formal. In fact, your attitude, appearance, and communication skills are still being observed closely. Simple mistakes such as wearing inappropriate clothing, choosing a noisy background, or having a poor internet connection can affect your chances of getting the job. Preparing for an online interview includes ensuring good lighting, a distraction-free environment, stable internet, and wearing proper attire — even if only your top half is visible.',
+        questions: [
+            {
+                id: 31,
+                question: 'What is the main difference between an online job interview and an offline one?',
+                options: [
+                    'The language used is different',
+                    'It is done using video conferencing platforms',
+                    'There are no questions asked',
+                    'It takes more time'
+                ],
+                answer: 1 // Jawaban B
+            },
+            {
+                id: 32,
+                question: 'According to the passage, why is wearing proper clothes still important in an online interview?',
+                options: [
+                    'Because the internet connection depends on it',
+                    'The interviewer might ask you to stand up',
+                    'It helps improve your voice quality',
+                    'You have to follow school dress codes'
+                ],
+                answer: 1 // Jawaban B
+            }
+        ]
+    },
+    // Section 11: Business English (Questions 33-35)
+    {
+        type: 'business',
+        questions: [
+            {
+                id: 33,
+                question: 'Which of the following is the correct translation for the word attitude in the context of a job interview?',
+                options: [
+                    'Penampilan',
+                    'Kepribadian',
+                    'Sikap',
+                    'Suara'
+                ],
+                answer: 2 // Jawaban C
+            },
+            {
+                id: 34,
+                question: 'In the sentence "Make sure your clothes are clean and pressed", what tense is used and why?',
+                options: [
+                    'Present Continuous, to show ongoing action',
+                    'Simple Present, to state a general instruction',
+                    'Past Tense, to report a past event',
+                    'Future Tense, to show upcoming plan'
+                ],
+                answer: 1 // Jawaban B
+            },
+            {
+                id: 35,
+                question: 'Which sentence below uses correct grammar and appropriate vocabulary for online job interview preparation?',
+                options: [
+                    'I must bringing my lunch to the meeting',
+                    'You should wear formal cloth and background is black',
+                    'We prepare internet connection so the interview not lag',
+                    'I have to prepare a quiet room and wear proper clothes'
+                ],
+                answer: 3 // Jawaban D
+            }
+        ]
+    },
+    // Section 12: Reading Passage 6 (Questions 36-37)
+    {
+        type: 'reading',
+        passage: 'A business presentation is a formal way to introduce business practices, products, or services. It often uses tools such as PowerPoint slides, charts, projectors, or even simple whiteboards and flip charts to support the explanation. These presentations are commonly used in meetings, conferences, or when pitching ideas to clients. To make a presentation clear, effective, and easy to follow, a presenter should use signposting language. Signposting helps guide the audience through the presentation by clearly showing what has just been discussed and what is coming next. Examples of signposting include phrases like “Today I am here to talk to you about…” to introduce a topic, or “Right, let’s move on to…” when changing topics. Other useful signposting examples include: Introduction: “Good morning, I’m Alex and today I’d like to talk about…” Inviting questions: “Does anyone have any questions?” Summary: “To sum up…” Conclusion: “Thank you for your attention.” Using these expressions makes the presentation organized and helps the audience stay engaged from start to finish.',
+        questions: [
+            {
+                id: 36,
+                question: 'What is the purpose of signposting in a business presentation?',
+                options: [
+                    'To guide the audience through the presentation',
+                    'To impress the audience with big words',
+                    'To make the presenter sound formal',
+                    'To avoid asking questions'
+                ],
+                answer: 0 // Jawaban A
+            },
+            {
+                id: 37,
+                question: 'Which of the following is an example of a signpost used to change the topic?',
+                options: [
+                    '“Today I am here to talk to you about…”',
+                    '“Does anyone have any questions?”',
+                    '“Right, let’s move on to…”',
+                    '“Thank you for your attention.”'
+                ],
+                answer: 2 // Jawaban C
+            }
+        ]
+    },
+    // Section 13: Business English (Questions 38-40)
+    {
+        type: 'business',
+        questions: [
+            {
+                id: 38,
+                question: 'Why is it important to design business presentation slides as simple as possible?',
+                options: [
+                    'Because simple slides make the presenter look cool',
+                    'Because simple slides are easier to create',
+                    'Because simple slides help the audience stay focused on the content',
+                    'Because simple slides reduce the number of audience questions'
+                ],
+                answer: 2 // Jawaban C
+            },
+            {
+                id: 39,
+                question: 'Why are charts or graphs recommended in business presentations?',
+                options: [
+                    'To make the slides more colorful',
+                    'Because they make slides look full',
+                    'Because everyone likes looking at pictures',
+                    'Because they help communicate important data and information more clearly'
+                ],
+                answer: 3 // Jawaban D
+            },
+            {
+                id: 40,
+                question: 'What is the risk of using inappropriate fonts and colors in a business presentation?',
+                options: [
+                    'The slides will look more unique and creative',
+                    'The audience may lose focus from the presenter and message',
+                    'The presenter will have less to explain',
+                    'The audience will laugh and enjoy the presentation more'
+                ],
+                answer: 1 // Jawaban B
+            }
+        ]
+    }
+];
+
+        // Student data
+        const students = [
+            { nim: '232704001', name: 'COBA-COBA' },
+            { nim: '242704001', name: 'ABDUL RAHMAN' },
+            { nim: '242704002', name: 'AHMAD THAIB' },
+            { nim: '242704003', name: 'ANGGA SURYAFORTUNA' },
+            { nim: '242704004', name: 'APRILIA NUR HAKIM' },
+            { nim: '242704005', name: 'CAESARIO NANDA BUANA' },
+            { nim: '242704006', name: 'ELKANA DUHA' },
+            { nim: '242704007', name: 'ELKE FITRIA ELSHYNTA' },
+            { nim: '242704008', name: 'ELMI ANDIKA NUROHMAN' },
+            { nim: '242704009', name: 'FAHRUL HUDA' },
+            { nim: '242704010', name: 'HIMAWAN PRASETIO' },
+            { nim: '242704011', name: 'IMAM SYAIFURRACHMAN' },
+            { nim: '242704012', name: 'M GUSLIM RAMADHAN BIMO BAWONO' },
+            { nim: '242704013', name: 'MARIANY MARSELINA GOIS' },
+            { nim: '242704014', name: 'MUHAMMAD FAJAR' },
+            { nim: '242704015', name: 'MUHAMMAD IRIANSYAH' },
+            { nim: '242704016', name: 'OKTAVIA BUDIAWATI' },
+            { nim: '242704017', name: 'PASKALIS LABA LUON' },
+            { nim: '242704018', name: 'RAHMAN NUR HANUBUN' },
+            { nim: '242704019', name: 'RAYZHA RIFKI AULIATSANIE' },
+            { nim: '242704020', name: 'RR. OKTALINDA NILASARI' },
+            { nim: '242704021', name: 'SYAFRIZAL' },
+            { nim: '242704022', name: 'TRI YOGA PURNOMO' },
+            { nim: '242704023', name: 'VICTORIA PUTRI BAHARI SILABAN' },
+            { nim: '242704024', name: 'ADOLFUS ANDIKA ADO BALA' },
+            { nim: '242704025', name: 'ARDHI ATSNI NORMAWAN' },
+            { nim: '242704026', name: 'AVIOR DWIHAPSARI' },
+            { nim: '242704027', name: 'AZARIAS DARWIANTO DJITA' },
+            { nim: '242704028', name: 'DEDE TRIPANI' },
+            { nim: '242704029', name: 'EVAN FRIDAYANTI NDURURU' },
+            { nim: '242704030', name: 'FELLISIA YANUAR PRIMADHANI' },
+            { nim: '242704031', name: 'FRANSISKUS REWEMASE' },
+            { nim: '242704032', name: 'GILANG SAHRIAL' },
+            { nim: '242704033', name: 'MIFTAHUL ARIFIN' },
+            { nim: '242704034', name: 'MOCHAMAD CODROI' },
+            { nim: '242704035', name: 'RANIKA YANTI' },
+            { nim: '242704036', name: 'SATRIO ANDRI CAHYO ASMORO' },
+            { nim: '242704037', name: 'HENDRI ADE WIBOWO' },
+            { nim: '242704038', name: 'KUKUH OKTANUGRAH TRY WIYONO' },
+            { nim: '242704039', name: 'MUHAMMAD SYARIF RIZKI NAZAR' },
+            { nim: '242704040', name: 'ZAHROTUL UYUNI' },
+            { nim: '242704041', name: 'ARMANSYAH WIDIANTO' },
+            { nim: '242704042', name: 'DIMAS NANDA FAJAR FITRIANTO' },
+            { nim: '242704043', name: 'ERFIRA DINDA PUTRI' },
+            { nim: '242704044', name: 'WULAN AGUSTA DINI RAHAYU' },
+            { nim: '242704045', name: 'KHOIRUNNISA' },
+            { nim: '242704046', name: 'MUHAMMAD FIRSAN INDRA PRADIPTA' },
+            { nim: '242704047', name: 'RIZKY PRANANDA SARI' },
+            { nim: '242704048', name: 'IWAN WEDA' },
+            { nim: '242704049', name: 'PITOYO' },
+            { nim: '242704050', name: 'FIKRI AL AKBAR' },
+            { nim: '242704051', name: 'EGA CAHYANI PUTRI' },
+            { nim: '242704052', name: 'SALSABILA AUDRI' },
+            { nim: '242704053', name: 'SYAFIYAH YULIANA' },
+            { nim: '242704054', name: 'AGUS SUSANTO' }
+        ];
+
+        // App state
+        let currentUser = null;
+        let timerInterval = null;
+        let timeLeft = 90 * 60; // 90 minutes in seconds
+        let testStarted = false;
+        let testSubmitted = false;
+
+        // Event Listeners
+        loginForm.addEventListener('submit', handleLogin);
+        logoutBtn.addEventListener('click', handleLogout);
+        startTestBtn.addEventListener('click', startTest);
+        readInstructionsBtn.addEventListener('click', showInstructions);
+        closeInstructionsBtn.addEventListener('click', hideInstructions);
+        backToWelcomeBtn.addEventListener('click', backToWelcome);
+        submitTestBtn.addEventListener('click', submitTest);
+        closeResultsBtn.addEventListener('click', closeResults);
+
+        // Functions
+        function handleLogin(e) {
+            e.preventDefault();
+            
+            const loginBtn = document.getElementById('login-btn');
+            const loginText = document.getElementById('login-text');
+            const loginSpinner = document.getElementById('login-spinner');
+            
+            // Show loading state
+            loginBtn.disabled = true;
+            loginText.textContent = 'Logging in...';
+            loginSpinner.classList.remove('hidden');
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            
+            // Validate inputs
+            if (!username || !password) {
+                resetLoginButton(loginBtn, loginText, loginSpinner);
+                alert('Please enter both username and password');
+                return;
+            }
+
+            // First check Firebase connection
+            database.ref('.info/connected').once('value').then(snapshot => {
+                if (snapshot.val() !== true) {
+                    throw new Error('No Firebase connection');
+                }
+
+                // Admin login
+                if (username === 'admin' && password === 'B3l@Tung666') {
+                    currentUser = { username: 'admin', role: 'admin' };
+                    showAdminDashboard();
+                    loadStudentResults();
+                    resetLoginButton(loginBtn, loginText, loginSpinner);
+                    return;
+                }
+                
+                // Student login
+                if (password === 'trans12345') {
+                    const student = students.find(s => s.nim === username);
+                    if (student) {
+                        currentUser = {
+                            username: student.nim,
+                            name: student.name,
+                            role: 'student'
+                        };
+                        
+                        // Check if student has already taken the test
+                        return database.ref('results/' + currentUser.username).once('value');
+                    } else {
+                        throw new Error('Invalid NIM');
+                    }
+                } else {
+                    throw new Error('Invalid password');
+                }
+            })
+            .then(snapshot => {
+                if (currentUser.role === 'student') {
+                    if (snapshot.exists()) {
+                        throw new Error('Test already taken');
+                    } else {
+                        showWelcomeModal();
+                    }
+                }
+                resetLoginButton(loginBtn, loginText, loginSpinner);
+            })
+            .catch(error => {
+                resetLoginButton(loginBtn, loginText, loginSpinner);
+                
+                switch(error.message) {
+                    case 'No Firebase connection':
+                        alert('No internet connection. Please check your network and try again.');
+                        break;
+                    case 'Invalid NIM':
+                        alert('Invalid NIM. Please check your NIM and try again.');
+                        break;
+                    case 'Invalid password':
+                        alert('Invalid password. Please use "trans12345" as password.');
+                        break;
+                    case 'Test already taken':
+                        alert('You have already taken the test. Each student can only take the test once.');
+                        break;
+                    default:
+                        console.error('Login error:', error);
+                        alert('Login failed. Please try again.');
+                }
+            });
+        }
+
+        function resetLoginButton(btn, text, spinner) {
+            btn.disabled = false;
+            text.textContent = 'Login';
+            spinner.classList.add('hidden');
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            clearInterval(timerInterval);
+            landingPage.classList.remove('hidden');
+            adminDashboard.classList.add('hidden');
+            testPage.classList.add('hidden');
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+
+        function showAdminDashboard() {
+            landingPage.classList.add('hidden');
+            adminDashboard.classList.remove('hidden');
+            testPage.classList.add('hidden');
+        }
+
+        function loadStudentResults() {
+            database.ref('results').once('value').then(snapshot => {
+                resultsTableBody.innerHTML = '';
+                
+                const results = snapshot.val() || {};
+                const allStudents = [...students];
+                
+                // Add students who haven't taken the test yet
+                Object.keys(results).forEach(nim => {
+                    const index = allStudents.findIndex(s => s.nim === nim);
+                    if (index !== -1) {
+                        allStudents[index].completed = true;
+                        allStudents[index].score = results[nim].score;
+                        allStudents[index].status = results[nim].score >= 70 ? 'Pass' : results[nim].score >= 60 ? 'Remedial' : 'Fail';
+                    }
+                });
+                
+                // Sort by NIM
+                allStudents.sort((a, b) => a.nim.localeCompare(b.nim));
+                
+                // Render table rows
+                allStudents.forEach(student => {
+                    const row = document.createElement('tr');
+                    
+                    row.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${student.nim}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${student.name}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${student.score || '-'}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${student.status || '-'}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${student.completed ? 'Yes' : 'No'}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            ${student.completed ? `
+                            <button onclick="resetStudent('${student.nim}')" class="text-indigo-600 hover:text-indigo-900 mr-2">Reset</button>
+                            <button onclick="deleteStudent('${student.nim}')" class="text-red-600 hover:text-red-900">Delete</button>
+                            ` : '-'}
+                        </td>
+                    `;
+                    
+                    resultsTableBody.appendChild(row);
+                });
+            });
+        }
+
+        function showWelcomeModal() {
+            welcomeTitle.textContent = `Welcome, ${currentUser.name}!`;
+            welcomeMessage.textContent = `Ok, ${currentUser.name}, the test will begin when you click the Start Test button. Have you read the instructions? If not, please read them again.`;
+            welcomeModal.classList.remove('hidden');
+        }
+
+        function showInstructions() {
+            welcomeModal.classList.add('hidden');
+            instructionsModal.classList.remove('hidden');
+        }
+
+        function hideInstructions() {
+            instructionsModal.classList.add('hidden');
+        }
+
+        function backToWelcome() {
+            instructionsModal.classList.add('hidden');
+            welcomeModal.classList.remove('hidden');
+        }
+
+        function startTest() {
+            welcomeModal.classList.add('hidden');
+            landingPage.classList.add('hidden');
+            testPage.classList.remove('hidden');
+            
+            // Display student info
+            studentInfo.innerHTML = `${currentUser.name} | ${currentUser.username}`;
+            
+            // Load test questions
+            renderTestQuestions();
+            
+            // Start timer
+            startTimer();
+            testStarted = true;
+        }
+
+        function renderTestQuestions() {
+            let html = '';
+            let questionNumber = 1;
+            
+            testQuestions.forEach(section => {
+                if (section.type === 'reading') {
+                    html += `
+                        <div class="mb-8 p-4 bg-gray-50 rounded-lg">
+                            <h3 class="text-lg font-semibold mb-2">Reading Passage:</h3>
+                            <p class="mb-4">${section.passage}</p>
+                            
+                            <div class="space-y-6">
+                                ${section.questions.map(q => `
+                                    <div class="question-group" data-question-id="${q.id}">
+                                        <p class="font-medium">${questionNumber++}. ${q.question}</p>
+                                        <div class="mt-2 space-y-2 ml-4">
+                                            ${q.options.map((opt, idx) => `
+                                                <div class="flex items-center">
+                                                    <input type="radio" id="q${q.id}_opt${idx}" name="q${q.id}" value="${idx}" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                                                    <label for="q${q.id}_opt${idx}" class="ml-2 block text-sm text-gray-700">${opt}</label>
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <div class="mb-8">
+                            <div class="space-y-6">
+                                ${section.questions.map(q => `
+                                    <div class="question-group" data-question-id="${q.id}">
+                                        <p class="font-medium">${questionNumber++}. ${q.question}</p>
+                                        <div class="mt-2 space-y-2 ml-4">
+                                            ${q.options.map((opt, idx) => `
+                                                <div class="flex items-center">
+                                                    <input type="radio" id="q${q.id}_opt${idx}" name="q${q.id}" value="${idx}" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                                                    <label for="q${q.id}_opt${idx}" class="ml-2 block text-sm text-gray-700">${opt}</label>
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            
+            testContainer.innerHTML = html;
+            
+            // Add copy protection
+            document.addEventListener('copy', preventCopy);
+            document.addEventListener('cut', preventCopy);
+            document.addEventListener('contextmenu', preventRightClick);
+            
+            function preventCopy(e) {
+                e.preventDefault();
+                alert('Copying test content is not allowed!');
+            }
+            
+            function preventRightClick(e) {
+                e.preventDefault();
+            }
+        }
+
+        function startTimer() {
+            updateTimerDisplay();
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    submitTest();
+                } else if (timeLeft <= 300) { // 5 minutes left
+                    timerDisplay.classList.add('timer-warning');
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const hours = Math.floor(timeLeft / 3600);
+            const minutes = Math.floor((timeLeft % 3600) / 60);
+            const seconds = timeLeft % 60;
+            
+            timerDisplay.textContent = 
+                `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function submitTest() {
+            if (testSubmitted) return;
+            testSubmitted = true;
+            
+            clearInterval(timerInterval);
+            
+            // Calculate score
+            let correctAnswers = 0;
+            const userAnswers = {};
+            
+            testQuestions.forEach(section => {
+                const questions = section.type === 'reading' ? section.questions : section.questions;
+                
+                questions.forEach(q => {
+                    const selectedOption = document.querySelector(`input[name="q${q.id}"]:checked`);
+                    const answer = selectedOption ? parseInt(selectedOption.value) : null;
+                    
+                    userAnswers[q.id] = answer;
+                    
+                    if (answer === q.answer) {
+                        correctAnswers++;
+                    }
+                });
+            });
+            
+            const score = correctAnswers * 2.5; // (40 * 2.5 = 100)
+            const status = score >= 70 ? 'Pass' : 'Remedial';
+            
+            // Save results to Firebase
+            database.ref('results/' + currentUser.username).set({
+                name: currentUser.name,
+                nim: currentUser.username,
+                score: score,
+                status: status,
+                timestamp: firebase.database.ServerValue.TIMESTAMP,
+                answers: userAnswers
+            }).then(() => {
+                // Show results
+                showResults(score, correctAnswers);
+            });
+        }
+
+        function showResults(score, correctAnswers) {
+            scoreDisplay.textContent = `Your Score is ${score.toFixed(1)}`;
+            correctCount.textContent = correctAnswers;
+            incorrectCount.textContent = 40 - correctAnswers;
+            
+            if (score >= 70) {
+                resultMessage.textContent = 'Congratulations! You have PASSED the test.';
+                resultMessage.className = 'text-green-600';
+            } else {
+                resultMessage.textContent = 'Sorry, you need to take REMEDIAL class. You will get the information later when the remedial is to be held. Just wait for your lecturer informs you.';
+                resultMessage.className = 'text-red-600';
+            }
+            
+            resultsModal.classList.remove('hidden');
+        }
+
+        function closeResults() {
+            resultsModal.classList.add('hidden');
+            handleLogout();
+        }
+
+        // Export to Excel function
+        document.getElementById('export-btn').addEventListener('click', exportToExcel);
+        
+        function exportToExcel() {
+            const table = document.querySelector('table');
+            const wb = XLSX.utils.table_to_book(table);
+            XLSX.writeFile(wb, `test_results_${new Date().toISOString().slice(0,10)}.xlsx`);
+        }
+
+        // Admin functions (attached to window for button onclick)
+        window.resetStudent = function(nim) {
+            if (confirm(`Are you sure you want to reset ${nim}'s test? They will be able to take the test again.`)) {
+                database.ref('results/' + nim).remove()
+                    .then(() => {
+                        alert('Test reset successfully!');
+                        loadStudentResults();
+                    })
+                    .catch(error => {
+                        alert('Error resetting test: ' + error.message);
+                    });
+            }
+        };
+
+        window.deleteStudent = function(nim) {
+            if (confirm(`Are you sure you want to delete ${nim}'s test results? This cannot be undone.`)) {
+                database.ref('results/' + nim).remove()
+                    .then(() => {
+                        alert('Results deleted successfully!');
+                        loadStudentResults();
+                    })
+                    .catch(error => {
+                        alert('Error deleting results: ' + error.message);
+                    });
+            }
+        };
+    </script>
+</body>
+</html>
